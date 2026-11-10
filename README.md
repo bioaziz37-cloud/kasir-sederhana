@@ -1,54 +1,52 @@
-# 🧾 Kasir Sederhana
+# Kasir Sederhana
 
-Aplikasi Point of Sale (POS) / Kasir sederhana berbasis web menggunakan PHP dan MySQL. Cocok untuk usaha kecil menengah seperti warung, toko, dan kafe.
+Aplikasi kasir berbasis web yang saya buat pakai PHP native dan MySQL. Dibuat untuk kebutuhan usaha kecil kayak warung, toko, atau kafe — yang penting bisa catat transaksi dan cetak struk.
 
-## ✨ Fitur
+## Fitur
 
-- 🔐 **Login & Autentikasi** — Sistem login dengan session
-- 📊 **Dashboard** — Ringkasan data transaksi
-- 🍔 **Manajemen Menu** — Tambah, edit, hapus menu/produk
-- 💰 **Kasir / POS** — Antarmuka kasir untuk transaksi penjualan
-- 🧾 **Cetak Struk** — Cetak struk transaksi
-- 📜 **Riwayat Transaksi** — Lihat riwayat transaksi dengan detail
-- 📱 **QRIS** — Dukungan pembayaran QRIS
+- Login admin dengan session
+- Dashboard ringkasan transaksi
+- Kelola menu (tambah, edit, hapus)
+- Halaman kasir buat input transaksi
+- Cetak struk
+- Riwayat transaksi lengkap dengan detailnya
+- Pembayaran via QRIS
 
-## 🛠️ Teknologi
+## Dibuat Pakai
 
-- **Backend:** PHP (Native)
-- **Database:** MySQL
-- **Frontend:** HTML, CSS, JavaScript
-- **Server:** Laragon / XAMPP / WAMP
+- PHP (native, tanpa framework)
+- MySQL
+- HTML, CSS, JavaScript
+- Laragon buat local server
 
-## 📋 Prasyarat
+## Cara Install
 
-- PHP >= 7.4
-- MySQL >= 5.7
-- Web server (Apache/Nginx)
+Pastikan sudah punya PHP (minimal 7.4), MySQL (minimal 5.7), dan web server (Apache/Nginx). Kalau pakai Laragon, XAMPP, atau WAMP tinggal jalan.
 
-## 🚀 Instalasi
+1. Clone repo ini
 
-1. **Clone repository**
    ```bash
-   git clone https://github.com/USERNAME/kasir-sederhana.git
+   git clone https://github.com/bioaziz37-cloud/kasir-sederhana.git
    ```
 
-2. **Pindahkan ke folder web server**
-   ```bash
-   # Contoh untuk Laragon
-   cp -r kasir-sederhana C:/laragon/www/
-   ```
+2. Taruh di folder web server
 
-3. **Import database**
-   - Buat database baru dengan nama `db_kasir`
-   - Import file SQL yang sudah disediakan:
+   Kalau pakai Laragon, copy aja ke `C:/laragon/www/`.
+
+3. Buat database dan import SQL-nya
+
+   Buat database baru namanya `db_kasir`, lalu import file SQL-nya:
+
    ```bash
    mysql -u root db_kasir < db_kasir.sql
    ```
-   Atau import melalui phpMyAdmin: pilih database `db_kasir` → tab **Import** → pilih file `db_kasir.sql` → klik **Go**
 
-4. **Konfigurasi koneksi database**
-   
-   Edit file `koneksi.php` sesuai pengaturan database Anda:
+   Atau kalau lebih nyaman lewat phpMyAdmin: pilih database `db_kasir`, klik tab Import, pilih file `db_kasir.sql`, terus klik Go.
+
+4. Sesuaikan koneksi database (kalau perlu)
+
+   Cek file `koneksi.php`, pastikan settingan-nya sesuai:
+
    ```php
    $host = "localhost";
    $user = "root";
@@ -56,41 +54,43 @@ Aplikasi Point of Sale (POS) / Kasir sederhana berbasis web menggunakan PHP dan 
    $db   = "db_kasir";
    ```
 
-5. **Akses aplikasi**
-   
-   Buka browser dan akses: `http://localhost/kasir-sederhana`
+   Kalau MySQL kamu pakai password, isi di bagian `$pass`.
 
-## 📁 Struktur Proyek
+5. Buka di browser
 
-```
-kasir-sederhana/
-├── admin/
-│   ├── dashboard.php       # Halaman dashboard
-│   ├── kasir.php           # Halaman kasir/POS
-│   ├── menu.php            # Manajemen menu
-│   ├── menu_hapus.php      # Hapus menu
-│   ├── riwayat.php         # Riwayat transaksi
-│   ├── cetak_struk.php     # Cetak struk
-│   ├── get_detail_transaksi.php  # API detail transaksi
-│   ├── sidebar.php         # Komponen sidebar
-│   └── theme.css           # Stylesheet
-├── logo/
-│   └── LOGO.png            # Logo aplikasi
-├── qris/
-│   └── QRIS BIO.jpeg       # Gambar QRIS
-├── db_kasir.sql            # File database SQL
-├── index.php               # Halaman login
-├── koneksi.php             # Konfigurasi database
-├── logout.php              # Proses logout
-└── README.md
-```
+   Akses `http://localhost/kasir-sederhana` dan login pakai akun default.
 
-## 🔑 Login Default
+## Login Default
 
 | Username | Password |
 |----------|----------|
 | `admin`  | `12345`  |
 
-## 📄 Lisensi
+## Struktur File
 
-Proyek ini bersifat open-source dan tersedia di bawah lisensi [MIT](LICENSE).
+```
+kasir-sederhana/
+├── admin/
+│   ├── dashboard.php
+│   ├── kasir.php
+│   ├── menu.php
+│   ├── menu_hapus.php
+│   ├── riwayat.php
+│   ├── cetak_struk.php
+│   ├── get_detail_transaksi.php
+│   ├── sidebar.php
+│   └── theme.css
+├── logo/
+│   └── LOGO.png
+├── qris/
+│   └── QRIS BIO.jpeg
+├── db_kasir.sql
+├── index.php
+├── koneksi.php
+├── logout.php
+└── README.md
+```
+
+## Lisensi
+
+Open-source, lisensi [MIT](LICENSE).
