@@ -38,9 +38,13 @@ Aplikasi Point of Sale (POS) / Kasir sederhana berbasis web menggunakan PHP dan 
    cp -r kasir-sederhana C:/laragon/www/
    ```
 
-3. **Buat database**
+3. **Import database**
    - Buat database baru dengan nama `db_kasir`
-   - Import file SQL (jika tersedia) atau buat tabel secara manual
+   - Import file SQL yang sudah disediakan:
+   ```bash
+   mysql -u root db_kasir < db_kasir.sql
+   ```
+   Atau import melalui phpMyAdmin: pilih database `db_kasir` → tab **Import** → pilih file `db_kasir.sql` → klik **Go**
 
 4. **Konfigurasi koneksi database**
    
@@ -74,11 +78,18 @@ kasir-sederhana/
 │   └── LOGO.png            # Logo aplikasi
 ├── qris/
 │   └── QRIS BIO.jpeg       # Gambar QRIS
+├── db_kasir.sql            # File database SQL
 ├── index.php               # Halaman login
 ├── koneksi.php             # Konfigurasi database
 ├── logout.php              # Proses logout
 └── README.md
 ```
+
+## 🔑 Login Default
+
+| Username | Password |
+|----------|----------|
+| `admin`  | `12345`  |
 
 ## 📄 Lisensi
 
