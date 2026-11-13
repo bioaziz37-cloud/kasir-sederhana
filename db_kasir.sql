@@ -1,4 +1,4 @@
-﻿-- MySQL dump 10.13  Distrib 8.4.3, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.4.3, for Win64 (x86_64)
 --
 -- Host: localhost    Database: db_kasir
 -- ------------------------------------------------------
@@ -121,7 +121,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','12345','Administrator Toko');
+INSERT INTO `users` VALUES (1,'admin','$2y$10$2wWT/oP3aPeYSD6NGQGAb.klcWoleNdGOX8S7idMy5tCWGIT4C9au','Administrator Toko');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

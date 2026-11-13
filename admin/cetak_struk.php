@@ -1,41 +1,44 @@
 <?php
-session_start();
-if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../index.php");
-    exit;
+require_once __DIR__ . '/../koneksi.php';
+require_login();
+
+$kode = trim((string) ($_GET['kode'] ?? ''));
+if ($kode === '') {
+    die("Kode transaksi tidak ditentukan.");
 }
 
-$koneksi = null;
-include '../koneksi.php';
-
-if (!$koneksi instanceof mysqli) {
-    echo "Koneksi database tidak tersedia!";
-    exit;
+$stmtTrx = mysqli_prepare($koneksi, "SELECT * FROM transaksi WHERE kode_transaksi = ? LIMIT 1");
+if (!$stmtTrx) {
+    die("Gagal menyiapkan data transaksi.");
 }
 
-if (!isset($_GET['kode'])) {
-    echo "Kode transaksi tidak ditemukan!";
-    exit;
-}
-
-$kode = mysqli_real_escape_string($koneksi, $_GET['kode']);
-$query_trx = mysqli_query($koneksi, "SELECT * FROM transaksi WHERE kode_transaksi = '$kode'");
-$trx = mysqli_fetch_assoc($query_trx);
+mysqli_stmt_bind_param($stmtTrx, "s", $kode);
+mysqli_stmt_execute($stmtTrx);
+$resTrx = mysqli_stmt_get_result($stmtTrx);
+$trx = mysqli_fetch_assoc($resTrx);
+mysqli_stmt_close($stmtTrx);
 
 if (!$trx) {
-    echo "Data transaksi tidak ditemukan!";
-    exit;
+    die("Transaksi dengan kode tersebut tidak ditemukan.");
 }
 
-$query_detail = mysqli_query($koneksi, "SELECT detail_transaksi.*, menu.nama_menu, menu.harga FROM detail_transaksi JOIN menu ON detail_transaksi.menu_id = menu.id WHERE detail_transaksi.kode_transaksi = '$kode'");
+$stmtDetail = mysqli_prepare(
+    $koneksi,
+    "SELECT d.*, m.nama_menu, m.harga 
+     FROM detail_transaksi d 
+     JOIN menu m ON d.menu_id = m.id 
+     WHERE d.kode_transaksi = ?"
+);
+mysqli_stmt_bind_param($stmtDetail, "s", $kode);
+mysqli_stmt_execute($stmtDetail);
+$query_detail = mysqli_stmt_get_result($stmtDetail);
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Struk <?= htmlspecialchars($trx['kode_transaksi']); ?> | RPL Coffee &amp; Eatery</title>
+    <title>Struk <?= e($trx['kode_transaksi']); ?> - RPL Coffee &amp; Eatery</title>
     <link rel="icon" type="image/png" href="../logo/LOGO.png">
     <style>
         @page {
@@ -43,102 +46,197 @@ $query_detail = mysqli_query($koneksi, "SELECT detail_transaksi.*, menu.nama_men
             margin: 0;
         }
 
-        body {
+        * {
             box-sizing: border-box;
+        }
+
+        body {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 12px;
+            font-size: 11px;
             width: 58mm;
             margin: 0 auto;
-            padding: 3mm;
-            color: #211b17;
+            padding: 4mm 3mm;
+            color: #000;
             background: #fff;
+            line-height: 1.35;
         }
+
         .text-center { text-align: center; }
         .text-end { text-align: right; }
         .fw-bold { font-weight: bold; }
-        .receipt-logo { width: 18mm; height: 18mm; object-fit: contain; margin-bottom: 5px; }
-        .text-center > h4 { font-size: 14px; letter-spacing: 0.04em; }
-        .text-center > p { line-height: 1.45; }
-        .line { border-bottom: 1px dashed #8d8175; margin: 8px 0; }
-        table { width: 100%; font-size: 11px; border-collapse: collapse; }
-        th, td { padding: 3px 0; vertical-align: top; }
-        table + .line { margin-top: 9px; }
-        .no-print button {
-            border: 1px solid #8a4f31;
-            border-radius: 4px;
-            background: #8a4f31;
-            color: #fff;
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 8px;
         }
-        .no-print a { color: #754024 !important; }
+
+        .receipt-logo {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
+
+        .store-name {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .store-sub {
+            font-size: 10px;
+            margin: 2px 0 0 0;
+            color: #333;
+        }
+
+        .divider {
+            border-bottom: 1px dashed #000;
+            margin: 6px 0;
+        }
+
+        .meta-table, .items-table, .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5px;
+        }
+
+        .meta-table td {
+            padding: 1px 0;
+            vertical-align: top;
+        }
+
+        .items-table td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        .summary-table td {
+            padding: 1.5px 0;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 9.5px;
+            color: #444;
+        }
+
+        .action-bar {
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .btn-print {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: sans-serif;
+        }
+
+        .link-back {
+            display: block;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #444;
+            text-decoration: none;
+            font-family: sans-serif;
+        }
+
         @media print {
-            body { width: 58mm; margin: 0; padding: 2mm; }
-            .no-print { display: none; }
+            body {
+                width: 58mm;
+                padding: 2mm;
+            }
+            .no-print {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body onload="window.print()">
 
-    <div class="text-center">
-        <img class="receipt-logo" src="../logo/LOGO.png" alt="Logo RPL Coffee &amp; Eatery">
-        <h4 class="fw-bold" style="margin: 0;">RPL COFFEE N EATERY</h4>
-        <p style="margin: 2px 0;">Jl. Raya Nepal No. Labkom 2</p>
-        <p style="margin: 2px 0;">Telp: 081234567890</p>
+    <div class="receipt-header">
+        <img class="receipt-logo" src="../logo/LOGO.png" alt="Logo">
+        <h1 class="store-name">RPL COFFEE &amp; EATERY</h1>
+        <p class="store-sub">Layanan Penjualan Kasir</p>
     </div>
 
-    <div class="line"></div>
+    <div class="divider"></div>
 
-    <div>
-        <span>No. Trx : <?= $trx['kode_transaksi']; ?></span><br>
-        <span>Pemesan : <?= htmlspecialchars($trx['nama_pemesan'] ?: '-', ENT_QUOTES, 'UTF-8'); ?></span><br>
-        <span>Tanggal : <?= $trx['tanggal']; ?></span><br>
-        <span>Kasir   : <?= htmlspecialchars($_SESSION['nama_lengkap']); ?></span><br>
-        <span>Metode  : <strong><?= $trx['metode_pembayaran'] ?? 'Tunai'; ?></strong></span>
-    </div>
+    <table class="meta-table">
+        <tr>
+            <td style="width: 50px;">No.Trx</td>
+            <td style="width: 6px;">:</td>
+            <td><?= e($trx['kode_transaksi']); ?></td>
+        </tr>
+        <tr>
+            <td>Waktu</td>
+            <td>:</td>
+            <td><?= e($trx['tanggal']); ?></td>
+        </tr>
+        <tr>
+            <td>Pemesan</td>
+            <td>:</td>
+            <td><?= e($trx['nama_pemesan'] ?: '-'); ?></td>
+        </tr>
+        <tr>
+            <td>Kasir</td>
+            <td>:</td>
+            <td><?= e($_SESSION['nama_lengkap'] ?? 'Staf'); ?></td>
+        </tr>
+        <tr>
+            <td>Metode</td>
+            <td>:</td>
+            <td><?= e($trx['metode_pembayaran'] ?? 'Tunai'); ?></td>
+        </tr>
+    </table>
 
-    <div class="line"></div>
+    <div class="divider"></div>
 
-    <table>
+    <table class="items-table">
         <?php while ($item = mysqli_fetch_assoc($query_detail)) : ?>
             <tr>
-                <td colspan="3" class="fw-bold"><?= htmlspecialchars($item['nama_menu']); ?></td>
+                <td colspan="2" class="fw-bold"><?= e($item['nama_menu']); ?></td>
             </tr>
             <tr>
-                <td><?= $item['jumlah']; ?> x <?= number_format($item['harga'], 0, ',', '.'); ?></td>
-                <td></td>
-                <td class="text-end">Rp <?= number_format($item['subtotal'], 0, ',', '.'); ?></td>
+                <td><?= (int) $item['jumlah']; ?> x <?= number_format((float) $item['harga'], 0, ',', '.'); ?></td>
+                <td class="text-end">Rp <?= number_format((float) $item['subtotal'], 0, ',', '.'); ?></td>
             </tr>
         <?php endwhile; ?>
     </table>
 
-    <div class="line"></div>
+    <div class="divider"></div>
 
-    <table>
+    <table class="summary-table">
         <tr>
-            <td class="fw-bold">Total Belanja:</td>
-            <td class="text-end fw-bold">Rp <?= number_format($trx['total_harga'], 0, ',', '.'); ?></td>
+            <td class="fw-bold">Total</td>
+            <td class="text-end fw-bold">Rp <?= number_format((float) $trx['total_harga'], 0, ',', '.'); ?></td>
         </tr>
         <tr>
-            <td>Bayar:</td>
-            <td class="text-end">Rp <?= number_format($trx['bayar'], 0, ',', '.'); ?></td>
+            <td>Bayar</td>
+            <td class="text-end">Rp <?= number_format((float) $trx['bayar'], 0, ',', '.'); ?></td>
         </tr>
         <tr>
-            <td>Kembalian:</td>
-            <td class="text-end">Rp <?= number_format($trx['kembalian'], 0, ',', '.'); ?></td>
+            <td>Kembalian</td>
+            <td class="text-end">Rp <?= number_format((float) $trx['kembalian'], 0, ',', '.'); ?></td>
         </tr>
     </table>
 
-    <div class="line"></div>
+    <div class="divider"></div>
 
-    <div class="text-center" style="margin-top: 10px;">
-        <p style="margin: 0;">Terima Kasih Atas Kunjungan Anda</p>
-        <p style="margin: 2px 0;">Barang yang sudah dibeli tidak dapat ditukar</p>
-        <p style="margin: 0px 0;"><hr>LAB-2</p>
-        <p style="margin: 0px;">Pass : smkn1pml</p>
+    <div class="footer-note">
+        <p style="margin: 0 0 2px 0;">Terima kasih atas kunjungan Anda.</p>
+        <p style="margin: 0;">Barang yang sudah dibeli tidak dapat ditukar.</p>
     </div>
 
-    <div class="text-center no-print" style="margin-top: 15px;">
-        <button onclick="window.print()" style="padding: 5px 10px; font-size: 11px; cursor: pointer;">Cetak Ulang</button>
-        <a href="kasir.php" style="display: block; margin-top: 5px; font-size: 11px; text-decoration: none; color: blue;">Kembali ke Kasir</a>
+    <div class="action-bar no-print">
+        <button class="btn-print" onclick="window.print()">Cetak Ulang</button>
+        <a class="link-back" href="kasir.php">&larr; Kembali ke Kasir</a>
     </div>
 
 </body>

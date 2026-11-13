@@ -1,25 +1,30 @@
 <?php
-session_start();
+require_once __DIR__ . '/../koneksi.php';
+require_login();
 
-if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../index.php?pesan=belum_login");
-    exit;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verify_csrf()) {
+        header("Location: menu.php?pesan=gagal_csrf");
+        exit;
+    }
+
+    $id = (int) ($_POST['id'] ?? 0);
+    if ($id > 0) {
+        $stmt = mysqli_prepare($koneksi, "DELETE FROM menu WHERE id = ?");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "i", $id);
+            mysqli_stmt_execute($stmt);
+            $deleted = mysqli_stmt_affected_rows($stmt) > 0;
+            mysqli_stmt_close($stmt);
+
+            if ($deleted) {
+                header("Location: menu.php?pesan=sukses_hapus");
+                exit;
+            }
+        }
+    }
 }
 
-require '../koneksi.php';
-
-if (!isset($koneksi) && isset($conn)) {
-    $koneksi = $conn;
-}
-
-if (!isset($koneksi)) {
-    $koneksi = mysqli_connect('localhost', 'root', '', 'kasir_sederhana');
-}
-
-if (isset($_GET['id'])) {
-    $id = (int) $_GET['id'];
-    mysqli_query($koneksi, "DELETE FROM menu WHERE id = '$id'");
-}
-
-header("Location: menu.php?pesan=sukses_hapus");
+// Fallback jika masih ada akses GET langsung tapi divalidasi
+header("Location: menu.php?pesan=gagal_hapus");
 exit;

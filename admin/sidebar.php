@@ -1,97 +1,123 @@
-<div class="sidebar" id="admin-sidebar">
-    <div class="sidebar-top">
-        <div class="brand-title">
-            <img class="badge-logo" src="../logo/LOGO.png" alt="Logo RPL Coffee &amp; Eatery">
-            <span class="brand-label">RPL COFFEE &amp; EATERY</span>
-        </div>
-        <button class="sidebar-toggle" id="sidebar-toggle" type="button"
-            aria-label="Ciutkan sidebar" aria-expanded="true" aria-controls="admin-sidebar">
-            <svg class="toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M14.5 5 7.5 12l7 7"></path>
-                <path d="M20 5v14"></path>
+<?php
+$currentPage = basename($_SERVER['PHP_SELF']);
+?>
+<aside class="app-sidebar" id="app-sidebar">
+    <div class="sidebar-header">
+        <a href="dashboard.php" class="brand-link">
+            <img src="../logo/LOGO.png" alt="Logo" class="brand-img">
+            <div class="brand-text">
+                <span class="brand-title">RPL Coffee</span>
+                <span class="brand-subtitle">Point of Sale</span>
+            </div>
+        </a>
+        <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Alihkan sidebar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6"/>
             </svg>
         </button>
     </div>
-    <div class="sidebar-section-label"><span>MENU UTAMA</span></div>
-    <div class="list-group list-group-flush">
-        <a href="dashboard.php" title="Dashboard" aria-label="Dashboard" class="list-group-item list-group-item-action <?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>">
-            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"></rect><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect></svg>
-            <span class="nav-label">Dashboard</span>
-        </a>
-        <a href="kasir.php" title="Halaman Kasir" aria-label="Halaman Kasir" class="list-group-item list-group-item-action <?= basename($_SERVER['PHP_SELF']) == 'kasir.php' ? 'active' : ''; ?>">
-            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v10H4z"></path><path d="M6 10l1.5-5h9L18 10M8 14h2m4 0h2m-8 3h8"></path></svg>
-            <span class="nav-label">Halaman Kasir</span>
-        </a>
-        <a href="menu.php" title="Kelola Menu" aria-label="Kelola Menu" class="list-group-item list-group-item-action <?= basename($_SERVER['PHP_SELF']) == 'menu.php' ? 'active' : ''; ?>">
-            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"></path><circle cx="3" cy="6" r=".5"></circle><circle cx="3" cy="12" r=".5"></circle><circle cx="3" cy="18" r=".5"></circle></svg>
-            <span class="nav-label">Kelola Menu</span>
-        </a>
-        <a href="riwayat.php" title="Riwayat Transaksi" aria-label="Riwayat Transaksi" class="list-group-item list-group-item-action <?= basename($_SERVER['PHP_SELF']) == 'riwayat.php' ? 'active' : ''; ?>">
-            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3.5 2"></path><path d="M4 4v4h4"></path></svg>
-            <span class="nav-label">Riwayat Transaksi</span>
-        </a>
-        <a href="#" title="Logout" aria-label="Logout" class="list-group-item list-group-item-action text-danger mt-4" data-bs-toggle="modal" data-bs-target="#modalLogout">
-            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5m5-4 4-3-4-3m4 3H9"></path></svg>
-            <span class="nav-label">Logout</span>
-        </a>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Navigasi Utama</div>
+        <ul class="nav-list">
+            <li>
+                <a href="dashboard.php" class="nav-link <?= $currentPage === 'dashboard.php' ? 'active' : ''; ?>">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="kasir.php" class="nav-link <?= $currentPage === 'kasir.php' ? 'active' : ''; ?>">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="nav-label">Halaman Kasir</span>
+                </a>
+            </li>
+            <li>
+                <a href="menu.php" class="nav-link <?= $currentPage === 'menu.php' ? 'active' : ''; ?>">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                    <span class="nav-label">Kelola Menu</span>
+                </a>
+            </li>
+            <li>
+                <a href="riwayat.php" class="nav-link <?= $currentPage === 'riwayat.php' ? 'active' : ''; ?>">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span class="nav-label">Riwayat Transaksi</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-section-title mt-4">Akun</div>
+        <ul class="nav-list">
+            <li>
+                <button type="button" class="nav-link text-danger border-0 bg-transparent w-100 text-start" data-bs-toggle="modal" data-bs-target="#modalLogout">
+                    <svg class="nav-icon text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span class="nav-label">Keluar</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+<div class="modal fade" id="modalLogout" tabindex="-1" aria-labelledby="modalLogoutLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title fw-bold text-dark" id="modalLogoutLabel">Konfirmasi Keluar</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body py-3">
+                <p class="text-secondary small mb-0">Apakah Anda yakin ingin mengakhiri sesi dan keluar?</p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Batal</button>
+                <a href="../logout.php" class="btn btn-sm btn-dark">Ya, Keluar</a>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
     (function () {
-        const sidebar = document.querySelector('.sidebar');
+        const sidebar = document.getElementById('app-sidebar');
         const toggle = document.getElementById('sidebar-toggle');
+        if (!sidebar || !toggle) return;
 
-        if (!sidebar || !toggle) {
-            return;
+        const storageKey = 'app-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(storageKey) === 'true';
+
+        if (isCollapsed) {
+            sidebar.classList.add('is-collapsed');
+            document.body.classList.add('sidebar-is-collapsed');
         }
-
-        const storageKey = 'rpl-sidebar-collapsed';
-        let isCollapsed = false;
-
-        try {
-            isCollapsed = localStorage.getItem(storageKey) === 'true';
-        } catch (error) {
-            isCollapsed = false;
-        }
-
-        function setCollapsed(collapsed) {
-            sidebar.classList.toggle('is-collapsed', collapsed);
-            document.body.classList.toggle('sidebar-collapsed', collapsed);
-            toggle.setAttribute('aria-expanded', String(!collapsed));
-            toggle.setAttribute('aria-label', collapsed ? 'Perlebar sidebar' : 'Ciutkan sidebar');
-            toggle.title = collapsed ? 'Perlebar sidebar' : 'Ciutkan sidebar';
-        }
-
-        setCollapsed(isCollapsed);
 
         toggle.addEventListener('click', function () {
-            isCollapsed = !sidebar.classList.contains('is-collapsed');
-            setCollapsed(isCollapsed);
-
-            try {
-                localStorage.setItem(storageKey, String(isCollapsed));
-            } catch (error) {
-                // Sidebar tetap dapat digunakan jika penyimpanan browser tidak tersedia.
-            }
+            sidebar.classList.toggle('is-collapsed');
+            document.body.classList.toggle('sidebar-is-collapsed');
+            const state = sidebar.classList.contains('is-collapsed');
+            localStorage.setItem(storageKey, String(state));
         });
     })();
 </script>
-
-<div class="modal fade" id="modalLogout" tabindex="-1" aria-labelledby="modalLogoutLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-white border-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold text-dark fs-6" id="modalLogoutLabel">Konfirmasi Keluar</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body px-4 py-2">
-                <p class="mb-0 text-secondary small">Apakah Anda yakin ingin keluar dari sistem aplikasi kasir?</p>
-            </div>
-            <div class="modal-footer border-0 pb-4 px-4">
-                <button type="button" class="btn btn-light btn-sm px-3 text-secondary" data-bs-dismiss="modal">Batal</button>
-                <a href="../logout.php" class="btn btn-danger btn-sm px-3">Keluar</a>
-            </div>
-        </div>
-    </div>
-</div>
